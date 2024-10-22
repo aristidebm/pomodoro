@@ -12,30 +12,45 @@ type TickMsg time.Time
 
 // Send a message every second.
 func tickEvery(duration time.Duration) tea.Cmd {
-    return tea.Every(duration, func(t time.Time) tea.Msg {
-        return TickMsg(t)
-    })
+	return tea.Every(duration, func(t time.Time) tea.Msg {
+		return TickMsg(t)
+	})
 }
 
 type TimerState struct {
-	Timer time.Time
+	ETA               time.Time
+	CountDownInSecond int64
+	value             time.Duration
+}
+
+func (s *TimerState) getETA() time.Time {
+	if !s.ETA.IsZero() {
+		return s.ETA
+	}
+	s.ETA = time.Now().Add(time.Duration(s.CountDownInSecond) * time.Second)
+	return s.ETA
 }
 
 func (s *TimerState) Init() tea.Cmd {
-    return nil
+	return nil
 }
 
 func (s *TimerState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    switch msg := msg.(type) {
-    case TickMsg:
-        // Return your Every command again to loop.
-        s.Timer = time.Time(msg)
-    }
+	switch msg := msg.(type) {
+	case TickMsg:
+		v := s.getETA().Sub(time.Time(msg))
+		if v >= 0 {
+			s.value = v
+		}
+	}
 	return s, nil
 }
 
 func (s *TimerState) View() string {
-	return s.Timer.Format(time.TimeOnly)
+	v := s.value.Seconds()
+	minute := int(v / 60)
+	second := int(v) % 60
+	return fmt.Sprintf("%d:%d", minute, second)
 }
 
 type Song struct {
@@ -82,10 +97,10 @@ func (s *AppState) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q":
 			return s, tea.Quit
 		}
-    case TickMsg:
-        // Return your Every command again to loop.
-        s.Timer.Update(msg)
-        return s, tickEvery(time.Second)
+	case TickMsg:
+		// Return your Every command again to loop.
+		s.Timer.Update(msg)
+		return s, tickEvery(time.Second)
 	}
 
 	return s, nil
@@ -100,7 +115,7 @@ func main() {
 	initialState := &AppState{
 		IsRunning: false,
 		PlayList:  &PlayListState{PlayList: []Song{}},
-		Timer:     &TimerState{Timer: time.Now()},
+		Timer:     &TimerState{ETA: time.Now().Add(60 * time.Second)},
 	}
 
 	app := tea.NewProgram(initialState, tea.WithAltScreen())
