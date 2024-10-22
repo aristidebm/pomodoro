@@ -1,4 +1,4 @@
-.PHONY: format lint install test
+.PHONY: format lint install test run
 
 format:
 	@go fmt .
@@ -11,3 +11,6 @@ install:
 
 test:
 	@go test .
+
+run:
+	@go run main.go
