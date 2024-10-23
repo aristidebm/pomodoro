@@ -1,9 +1,11 @@
 package components
 
 import (
+	// "strings"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 
 	"github.com/aristidebm/pomodoro/events"
 )
@@ -45,7 +47,13 @@ func (s *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return s, nil
 }
 
+var appStyle = lipgloss.NewStyle().
+	BorderStyle(lipgloss.NormalBorder()).
+	Background(lipgloss.Color("63")).
+	Padding(2, 4)
+
 func (s *App) View() string {
 	// renders the UI based on the data in the model.
-	return s.Timer.View()
+	return lipgloss.JoinHorizontal(lipgloss.Center, appStyle.Render(s.Timer.View()))
+	// return lipgloss.JoinHorizontal(lipgloss.Center,strings.Repeat(" ", 10), s.Timer.View())
 }

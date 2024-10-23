@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aristidebm/pomodoro/events"
-
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+
+	"github.com/aristidebm/pomodoro/events"
 )
 
 type Timer struct {
@@ -38,9 +39,22 @@ func (s *Timer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return s, nil
 }
 
+var timeStyle = lipgloss.NewStyle().
+	BorderStyle(lipgloss.NormalBorder()).
+	BorderForeground(lipgloss.Color("#FFFFFF")).
+	Align(lipgloss.Center).
+	Padding(2, 4)
+
 func (s *Timer) View() string {
 	v := s.value.Seconds()
 	minute := int(v / 60)
 	second := int(v) % 60
-	return fmt.Sprintf("%d:%d", minute, second)
+	return timeStyle.Render(fmt.Sprintf("%s:%s", normalizeNumber(minute), normalizeNumber(second)))
+}
+
+func normalizeNumber(number int) string {
+	if number < 10 {
+		return "0" + fmt.Sprintf("%d", number)
+	}
+	return fmt.Sprintf("%d", number)
 }
