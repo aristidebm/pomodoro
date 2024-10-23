@@ -7,6 +7,10 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
+	// There is also this package, you may check it out
+	// https://github.com/common-nighthawk/go-figure
+	"github.com/zs5460/art"
+
 	"github.com/aristidebm/pomodoro/events"
 )
 
@@ -40,16 +44,19 @@ func (s *Timer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 var timeStyle = lipgloss.NewStyle().
-	BorderStyle(lipgloss.NormalBorder()).
-	BorderForeground(lipgloss.Color("#FFFFFF")).
+	// BorderStyle(lipgloss.NormalBorder()).
+	// BorderForeground(lipgloss.Color("#FFFFFF")).
 	Align(lipgloss.Center).
-	Padding(2, 4)
+	Height(2).
+	Width(8).
+	Bold(true).
+	Padding(1, 4)
 
 func (s *Timer) View() string {
 	v := s.value.Seconds()
 	minute := int(v / 60)
 	second := int(v) % 60
-	return timeStyle.Render(fmt.Sprintf("%s:%s", normalizeNumber(minute), normalizeNumber(second)))
+	return timeStyle.Render(art.String(fmt.Sprintf("%s:%s", normalizeNumber(minute), normalizeNumber(second))))
 }
 
 func normalizeNumber(number int) string {

@@ -19,6 +19,8 @@ func tickEvery(duration time.Duration) tea.Cmd {
 type App struct {
 	IsRunning bool
 	Timer     *Timer
+	width     int
+	height    int
 }
 
 func (s *App) Init() tea.Cmd {
@@ -38,6 +40,11 @@ func (s *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q":
 			return s, tea.Quit
 		}
+
+	case tea.WindowSizeMsg:
+		s.width = msg.Width
+		s.height = msg.Height
+
 	case events.TickMsg:
 		// Return your Every command again to loop.
 		s.Timer.Update(msg)
@@ -49,11 +56,16 @@ func (s *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 var appStyle = lipgloss.NewStyle().
 	BorderStyle(lipgloss.NormalBorder()).
-	Background(lipgloss.Color("63")).
-	Padding(2, 4)
+	BorderForeground(lipgloss.Color("#FF0000")).
+	Width(50).
+	Height(10).
+	Padding(2, 4).
+	Align(lipgloss.Center)
 
 func (s *App) View() string {
 	// renders the UI based on the data in the model.
-	return lipgloss.JoinHorizontal(lipgloss.Center, appStyle.Render(s.Timer.View()))
-	// return lipgloss.JoinHorizontal(lipgloss.Center,strings.Repeat(" ", 10), s.Timer.View())
+	if s.width == 0 {
+		return ""
+	}
+	return lipgloss.Place(s.width, s.height, lipgloss.Center, lipgloss.Center, appStyle.Render(s.Timer.View()))
 }
