@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
 
 	// "flag"
 	"github.com/aristidebm/pomodoro/components"
@@ -18,13 +17,14 @@ func main() {
 	// 	Play(*filename)
 	// }
 
-	initialState := &components.App{
-		IsRunning: false,
-		Timer:     &components.Timer{ETA: time.Now().Add(1200 * time.Second)},
-		Player:    components.NewPlayer(),
+	app, err := components.NewApp(25 * 60)
+	if err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
 	}
-	app := tea.NewProgram(initialState, tea.WithAltScreen())
-	if _, err := app.Run(); err != nil {
+
+	p := tea.NewProgram(app, tea.WithAltScreen())
+	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
 	}

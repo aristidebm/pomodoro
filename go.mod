@@ -5,6 +5,7 @@ go 1.23.0
 require (
 	github.com/charmbracelet/bubbletea v1.1.1
 	github.com/charmbracelet/lipgloss v0.13.0
+	github.com/dhowden/tag v0.0.0-20240417053706-3d75831295e8
 	github.com/gopxl/beep/v2 v2.1.0
 	github.com/zs5460/art v0.3.0
 )

@@ -1,7 +1,9 @@
 package components
 
 import (
-	// "strings"
+	"errors"
+	"fmt"
+	"os"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -16,20 +18,22 @@ func tickEvery(duration time.Duration) tea.Cmd {
 	})
 }
 
-type App struct {
-	IsRunning bool
-	Timer     *Timer
-	Player    *Player
+var PlayListLoadingError = errors.New("cannot load the playlist")
+
+type app struct {
+	isRunning bool
+	timer     *timer
+	player    *player
 	width     int
 	height    int
 }
 
-func (s *App) Init() tea.Cmd {
+func (s *app) Init() tea.Cmd {
 	// returns an initial command for the application to run
-	return tickEvery(time.Second)
+	return tickEvery(time.Microsecond)
 }
 
-func (s *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s *app) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// that handles incoming events and updates the state accordingly.
 	// and returns the updated state and the cmd to run on it
 	switch msg := msg.(type) {
@@ -40,15 +44,17 @@ func (s *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// These keys should exit the program.
 		case "q":
 			return s, tea.Quit
-		}
 
+		case "p":
+			s.play()
+		}
 	case tea.WindowSizeMsg:
 		s.width = msg.Width
 		s.height = msg.Height
 
 	case events.TickMsg:
 		// Return your Every command again to loop.
-		s.Timer.Update(msg)
+		s.timer.Update(msg)
 		return s, tickEvery(time.Second)
 	}
 
@@ -63,7 +69,7 @@ var appStyle = lipgloss.NewStyle().
 	Padding(2, 4).
 	Align(lipgloss.Center)
 
-func (s *App) View() string {
+func (s *app) View() string {
 	// renders the UI based on the data in the model.
 	if s.width == 0 {
 		return ""
@@ -73,9 +79,54 @@ func (s *App) View() string {
 		lipgloss.Center,
 		lipgloss.Center,
 		appStyle.Render(lipgloss.JoinVertical(lipgloss.Left,
-			s.Timer.View(),
-			s.Player.View(),
+			s.timer.View(),
+			s.player.View(),
 		),
 		),
 	)
+}
+
+func (s *app) play() {
+	s.isRunning = !s.isRunning
+	s.timer.play()
+	s.player.play()
+}
+
+type option struct {
+	songPath string
+}
+
+type optionSetter func(o *option)
+
+func WithPlayList(path string) optionSetter {
+	return func(o *option) {
+		o.songPath = path
+	}
+}
+
+func NewApp(duration int64, opts ...optionSetter) (*app, error) {
+	// set options
+	opt := &option{}
+	for _, f := range opts {
+		f(opt)
+	}
+
+	var songs []song
+	if opt.songPath != "" {
+		if _, err := os.Stat(opt.songPath); err != nil {
+			return nil, fmt.Errorf("%w: %w", PlayListLoadingError, err)
+		}
+
+		result, err := generatePlayList(opt.songPath)
+		if err != nil {
+			return nil, fmt.Errorf("%w: %w", PlayListLoadingError, err)
+		}
+		songs = result
+	}
+
+	return &app{
+		isRunning: false,
+		timer:     &timer{duration: duration},
+		player:    newPlayer(songs),
+	}, nil
 }

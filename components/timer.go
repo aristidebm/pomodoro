@@ -14,33 +14,49 @@ import (
 	"github.com/aristidebm/pomodoro/events"
 )
 
-type Timer struct {
-	ETA               time.Time
-	CountDownInSecond int64
-	value             time.Duration
+type timer struct {
+	duration  int64
+	elapsed   int64
+	isRunning bool
+	value     time.Duration
 }
 
-func (s *Timer) getETA() time.Time {
-	if !s.ETA.IsZero() {
-		return s.ETA
-	}
-	s.ETA = time.Now().Add(time.Duration(s.CountDownInSecond) * time.Second)
-	return s.ETA
-}
-
-func (s *Timer) Init() tea.Cmd {
+func (s *timer) Init() tea.Cmd {
 	return nil
 }
 
-func (s *Timer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s *timer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case events.TickMsg:
-		v := s.getETA().Sub(time.Time(msg))
-		if v >= 0 {
-			s.value = v
+		// the first thick at applicaton start so
+		// compute and set the value
+		if s.isZero() {
+			s.reset()
+		}
+
+		if s.isRunning {
+			s.update(time.Time(msg))
 		}
 	}
 	return s, nil
+}
+
+func (s *timer) reset() {
+	s.value = time.Duration(s.duration) * time.Second
+}
+
+func (s *timer) isZero() bool {
+	return s.value.Microseconds() == 0
+}
+
+func (s *timer) update(value time.Time) {
+	s.value = time.Duration(s.duration-s.elapsed) * time.Second
+	s.elapsed += 1
+}
+
+func (s *timer) play() {
+	// toggle the running state
+	s.isRunning = !s.isRunning
 }
 
 var timeStyle = lipgloss.NewStyle().
@@ -52,7 +68,7 @@ var timeStyle = lipgloss.NewStyle().
 	Bold(true).
 	Padding(0, 4)
 
-func (s *Timer) View() string {
+func (s *timer) View() string {
 	v := s.value.Seconds()
 	minute := int(v / 60)
 	second := int(v) % 60
