@@ -55,8 +55,8 @@ func (s *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 var appStyle = lipgloss.NewStyle().
-	BorderStyle(lipgloss.NormalBorder()).
-	BorderForeground(lipgloss.Color("#FF0000")).
+	// BorderStyle(lipgloss.NormalBorder()).
+	// BorderForeground(lipgloss.Color("#FF0000")).
 	Width(50).
 	Height(10).
 	Padding(2, 4).
