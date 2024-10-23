@@ -19,6 +19,7 @@ func tickEvery(duration time.Duration) tea.Cmd {
 type App struct {
 	IsRunning bool
 	Timer     *Timer
+	Player    *Player
 	width     int
 	height    int
 }
@@ -67,5 +68,14 @@ func (s *App) View() string {
 	if s.width == 0 {
 		return ""
 	}
-	return lipgloss.Place(s.width, s.height, lipgloss.Center, lipgloss.Center, appStyle.Render(s.Timer.View()))
+	return lipgloss.Place(s.width,
+		s.height,
+		lipgloss.Center,
+		lipgloss.Center,
+		appStyle.Render(lipgloss.JoinVertical(lipgloss.Left,
+			s.Timer.View(),
+			s.Player.View(),
+		),
+		),
+	)
 }

@@ -1,30 +1,31 @@
 package main
 
 import (
-	// "fmt"
-	// "os"
-	// "time"
+	"fmt"
+	"os"
+	"time"
 
-	"flag"
-	// "github.com/aristidebm/pomodoro/components"
-	// tea "github.com/charmbracelet/bubbletea"
+	// "flag"
+	"github.com/aristidebm/pomodoro/components"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
-var filename = flag.String("filename", "", "mp3 filename")
+// var filename = flag.String("filename", "", "mp3 filename")
 
 func main() {
-	flag.Parse()
-	if *filename != "" {
-		Play(*filename)
-	}
+	// flag.Parse()
+	// if *filename != "" {
+	// 	Play(*filename)
+	// }
 
-	// initialState := &components.App{
-	// 	IsRunning: false,
-	// 	Timer:     &components.Timer{ETA: time.Now().Add(1200 * time.Second)},
-	// }
-	// app := tea.NewProgram(initialState, tea.WithAltScreen())
-	// if _, err := app.Run(); err != nil {
-	// 	fmt.Printf("Alas, there's been an error: %v", err)
-	// 	os.Exit(1)
-	// }
+	initialState := &components.App{
+		IsRunning: false,
+		Timer:     &components.Timer{ETA: time.Now().Add(1200 * time.Second)},
+		Player:    components.NewPlayer(),
+	}
+	app := tea.NewProgram(initialState, tea.WithAltScreen())
+	if _, err := app.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
+	}
 }

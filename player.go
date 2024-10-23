@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-    // Check this tutorial for introduction
-    // https://reintech.io/blog/writing-a-go-based-music-player
+	// Check this tutorial for introduction
+	// https://reintech.io/blog/writing-a-go-based-music-player
 	"github.com/gopxl/beep/v2"
 	"github.com/gopxl/beep/v2/mp3"
 	"github.com/gopxl/beep/v2/speaker"

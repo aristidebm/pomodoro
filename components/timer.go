@@ -50,7 +50,7 @@ var timeStyle = lipgloss.NewStyle().
 	Height(2).
 	Width(8).
 	Bold(true).
-	Padding(1, 4)
+	Padding(0, 4)
 
 func (s *Timer) View() string {
 	v := s.value.Seconds()
