@@ -22,6 +22,7 @@ var PlayListLoadingError = errors.New("cannot load the playlist")
 
 type app struct {
 	isRunning bool
+	color     string
 	isHelp    bool
 	timer     *timer
 	player    *player
@@ -90,6 +91,10 @@ func (s *app) View() string {
 		page = appStyle.Render(s.help.View())
 	}
 
+	if s.color != "" {
+		page = lipgloss.NewStyle().Foreground(lipgloss.Color(s.color)).Render(page)
+	}
+
 	return lipgloss.Place(s.width,
 		s.height,
 		lipgloss.Center,
@@ -106,6 +111,7 @@ func (s *app) play() {
 
 type option struct {
 	songPath string
+	color    string
 }
 
 type optionSetter func(o *option)
@@ -113,6 +119,12 @@ type optionSetter func(o *option)
 func WithPlayList(path string) optionSetter {
 	return func(o *option) {
 		o.songPath = path
+	}
+}
+
+func WithColor(color string) optionSetter {
+	return func(o *option) {
+		o.color = color
 	}
 }
 
@@ -142,5 +154,6 @@ func NewApp(duration int64, opts ...optionSetter) (*app, error) {
 		timer:     &timer{duration: duration},
 		player:    newPlayer(songs),
 		help:      NewHelp(),
+		color:     opt.color,
 	}, nil
 }

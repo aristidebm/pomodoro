@@ -15,7 +15,8 @@ import (
 var durationParser = regexp.MustCompile(`(\d+)(d|h|m|s)?`)
 
 var path = flag.String("path", "", "path to playlist (.mp3)")
-var duration = flag.String("duration", "25m", "session duration, example 1d|24h|1444m|86400")
+var duration = flag.String("duration", "25m", "session duration, example: 1d|24h|1444m|86400")
+var color = flag.String("color", "", "html colors to use, example: #FFFFFF")
 
 func main() {
 	flag.Parse()
@@ -45,7 +46,7 @@ func main() {
 		}
 	}
 
-	app, err := components.NewApp(int64(d), components.WithPlayList(*path))
+	app, err := components.NewApp(int64(d), components.WithPlayList(*path), components.WithColor(*color))
 	if err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
