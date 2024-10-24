@@ -50,8 +50,14 @@ func (s *Timer) isZero() bool {
 }
 
 func (s *Timer) update(value time.Time) {
-	s.value = time.Duration(s.duration-s.elapsed) * time.Second
-	s.elapsed += 1
+    if v := time.Duration(s.duration-s.elapsed) * time.Second; v >= 0 {
+        s.value = v
+        s.elapsed += 1
+    } else {
+        // reset the timer
+        s.elapsed = 0
+        s.isRunning = false
+    }
 }
 
 func (s *Timer) play() {

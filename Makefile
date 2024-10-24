@@ -1,7 +1,7 @@
 # You can check here for a most complete Makefile example
 # https://www.alexedwards.net/blog/a-time-saving-makefile-for-your-go-projects
 
-.PHONY: format lint install test run build
+.PHONY: format lint install test run build deploy
 
 format:
 	@go fmt ./...
@@ -20,3 +20,7 @@ run:
 
 build:
 	@go build -o=/tmp/pomodoro main.go
+
+deploy:
+	@rm -rf ~/.local/bin/pomodoro
+	@cp /tmp/pomodoro ~/.local/bin/pomodoro
