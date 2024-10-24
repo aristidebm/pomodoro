@@ -22,8 +22,10 @@ var PlayListLoadingError = errors.New("cannot load the playlist")
 
 type app struct {
 	isRunning bool
+	isHelp    bool
 	timer     *timer
 	player    *player
+	help      *Help
 	width     int
 	height    int
 }
@@ -47,6 +49,10 @@ func (s *app) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "p":
 			s.play()
+
+		case "h":
+			s.isHelp = !s.isHelp
+			s.help.Update(msg)
 		}
 	case tea.WindowSizeMsg:
 		s.width = msg.Width
@@ -74,15 +80,21 @@ func (s *app) View() string {
 	if s.width == 0 {
 		return ""
 	}
+
+	page := appStyle.Render(lipgloss.JoinVertical(lipgloss.Left,
+		s.timer.View(),
+		s.player.View(),
+	))
+
+	if s.isHelp {
+		page = appStyle.Render(s.help.View())
+	}
+
 	return lipgloss.Place(s.width,
 		s.height,
 		lipgloss.Center,
 		lipgloss.Center,
-		appStyle.Render(lipgloss.JoinVertical(lipgloss.Left,
-			s.timer.View(),
-			s.player.View(),
-		),
-		),
+		page,
 	)
 }
 
@@ -126,7 +138,9 @@ func NewApp(duration int64, opts ...optionSetter) (*app, error) {
 
 	return &app{
 		isRunning: false,
+		isHelp:    false,
 		timer:     &timer{duration: duration},
 		player:    newPlayer(songs),
+		help:      NewHelp(),
 	}, nil
 }

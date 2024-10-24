@@ -26,8 +26,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Print(match)
-
 	d, err := strconv.Atoi(match[1])
 	if err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
