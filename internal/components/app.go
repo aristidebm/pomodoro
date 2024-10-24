@@ -9,7 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/aristidebm/pomodoro/events"
+	"github.com/aristidebm/pomodoro/internal/events"
 )
 
 func tickEvery(duration time.Duration) tea.Cmd {
@@ -20,23 +20,23 @@ func tickEvery(duration time.Duration) tea.Cmd {
 
 var PlayListLoadingError = errors.New("cannot load the playlist")
 
-type app struct {
+type App struct {
 	isRunning bool
 	color     string
 	isHelp    bool
-	timer     *timer
-	player    *player
+	timer     *Timer
+	player    *Player
 	help      *Help
 	width     int
 	height    int
 }
 
-func (s *app) Init() tea.Cmd {
+func (s *App) Init() tea.Cmd {
 	// returns an initial command for the application to run
 	return tickEvery(time.Microsecond)
 }
 
-func (s *app) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// that handles incoming events and updates the state accordingly.
 	// and returns the updated state and the cmd to run on it
 	switch msg := msg.(type) {
@@ -76,7 +76,7 @@ var appStyle = lipgloss.NewStyle().
 	Padding(2, 4).
 	Align(lipgloss.Center)
 
-func (s *app) View() string {
+func (s *App) View() string {
 	// renders the UI based on the data in the model.
 	if s.width == 0 {
 		return ""
@@ -103,7 +103,7 @@ func (s *app) View() string {
 	)
 }
 
-func (s *app) play() {
+func (s *App) play() {
 	s.isRunning = !s.isRunning
 	s.timer.play()
 	s.player.play()
@@ -128,14 +128,14 @@ func WithColor(color string) optionSetter {
 	}
 }
 
-func NewApp(duration int64, opts ...optionSetter) (*app, error) {
+func NewApp(duration int64, opts ...optionSetter) (*App, error) {
 	// set options
 	opt := &option{}
 	for _, f := range opts {
 		f(opt)
 	}
 
-	var songs []song
+	var songs []Song
 	if opt.songPath != "" {
 		if _, err := os.Stat(opt.songPath); err != nil {
 			return nil, fmt.Errorf("%w: %w", PlayListLoadingError, err)
@@ -148,10 +148,10 @@ func NewApp(duration int64, opts ...optionSetter) (*app, error) {
 		songs = result
 	}
 
-	return &app{
+	return &App{
 		isRunning: false,
 		isHelp:    false,
-		timer:     &timer{duration: duration},
+		timer:     &Timer{duration: duration},
 		player:    newPlayer(songs),
 		help:      NewHelp(),
 		color:     opt.color,

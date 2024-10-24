@@ -8,7 +8,7 @@ import (
 
 	"flag"
 
-	"github.com/aristidebm/pomodoro/components"
+	"github.com/aristidebm/pomodoro/internal/components"
 	tea "github.com/charmbracelet/bubbletea"
 )
 

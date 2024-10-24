@@ -11,21 +11,21 @@ import (
 	// https://github.com/common-nighthawk/go-figure
 	"github.com/zs5460/art"
 
-	"github.com/aristidebm/pomodoro/events"
+	"github.com/aristidebm/pomodoro/internal/events"
 )
 
-type timer struct {
+type Timer struct {
 	duration  int64
 	elapsed   int64
 	isRunning bool
 	value     time.Duration
 }
 
-func (s *timer) Init() tea.Cmd {
+func (s *Timer) Init() tea.Cmd {
 	return nil
 }
 
-func (s *timer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s *Timer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case events.TickMsg:
 		// the first thick at applicaton start so
@@ -41,20 +41,20 @@ func (s *timer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return s, nil
 }
 
-func (s *timer) reset() {
+func (s *Timer) reset() {
 	s.value = time.Duration(s.duration) * time.Second
 }
 
-func (s *timer) isZero() bool {
+func (s *Timer) isZero() bool {
 	return s.value.Microseconds() == 0
 }
 
-func (s *timer) update(value time.Time) {
+func (s *Timer) update(value time.Time) {
 	s.value = time.Duration(s.duration-s.elapsed) * time.Second
 	s.elapsed += 1
 }
 
-func (s *timer) play() {
+func (s *Timer) play() {
 	// toggle the running state
 	s.isRunning = !s.isRunning
 }
@@ -67,7 +67,7 @@ var timeStyle = lipgloss.NewStyle().
 	Bold(true).
 	Padding(0, 4)
 
-func (s *timer) View() string {
+func (s *Timer) View() string {
 	v := s.value.Seconds()
 	minute := int(v / 60)
 	second := int(v) % 60
