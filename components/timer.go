@@ -64,7 +64,6 @@ var timeStyle = lipgloss.NewStyle().
 	// BorderForeground(lipgloss.Color("#FFFFFF")).
 	Align(lipgloss.Center).
 	Height(2).
-	Width(8).
 	Bold(true).
 	Padding(0, 4)
 
