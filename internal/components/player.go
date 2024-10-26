@@ -29,7 +29,7 @@ type Song struct {
 	title    string
 }
 
-// To know how to handle pauses and resumes check here 
+// To know how to handle pauses and resumes check here
 // https://github.com/Malwarize/retro/blob/dd50e3722eef83406d1322031a4ca9f3d8707410/server/player/player.go#L275
 type Player struct {
 	icon           string
@@ -65,9 +65,9 @@ func (p *Player) View() string {
 func (p *Player) play() {
 	p.isRunning = !p.isRunning
 	if p.isRunning && !p.trackIsPlaying && p.cursor < len(p.songs) {
-        ctx := context.Background()
-        ctx, _ = context.WithCancel(ctx)
-        go p.playTrack(ctx)
+		ctx := context.Background()
+		ctx, _ = context.WithCancel(ctx)
+		go p.playTrack(ctx)
 	}
 }
 
@@ -144,7 +144,7 @@ func (p *Player) playTrack(ctx context.Context) error {
 		f, err := os.Open(song.filename)
 		if err != nil {
 			// try the next item in the list
-            p.next()
+			p.next()
 			continue
 		}
 		defer f.Close()
@@ -157,10 +157,10 @@ func (p *Player) playTrack(ctx context.Context) error {
 
 		if !p.isInitialized && p.isRunning {
 			err = speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
-            if err != nil {
-                return err
-            }
-            p.isInitialized = true
+			if err != nil {
+				return err
+			}
+			p.isInitialized = true
 		}
 
 		done := make(chan bool)
@@ -173,7 +173,7 @@ func (p *Player) playTrack(ctx context.Context) error {
 
 		p.next()
 
-        streamer.Close()
-        f.Close()
+		streamer.Close()
+		f.Close()
 	}
 }
