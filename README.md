@@ -9,7 +9,7 @@ Just another pomodoro timer with music playing support
 Currently, the App is not pre-packaged. To run it, you need to build it from source
 but don't worry, there is not much to do, follow the steps below
 
-1. Download the Github repo 
+1. Download the GitHub repo 
 
 ```bash
 $)> git clone  https://gitlab.com/aristidebm/pomodoro.git \<directory\>
@@ -51,6 +51,7 @@ $)> pomodoro --help
 
 ## TODO
 
-- [ ] Add `reset` feature
-- [ ] Add the ability to pause the music player when pausing the timer and make it optional
-- [ ] Add support for break managements (long breaks, short breaks, ...)
+- [ ] Add support for timer `reset` feature.
+- [ ] Add support for more player features (pause/resume track, next/prev track).
+- [ ] Add support for breaks management (long breaks, short breaks, ...).
+- [ ] Add support for playing *.mp4, *.webm files.
