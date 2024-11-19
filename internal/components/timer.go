@@ -49,7 +49,7 @@ func (s *Timer) isZero() bool {
 	return s.value.Microseconds() == 0
 }
 
-func (s *Timer) update(value time.Time) {
+func (s *Timer) update(_ time.Time) {
 	if v := time.Duration(s.duration-s.elapsed) * time.Second; v >= 0 {
 		s.value = v
 		s.elapsed += 1
@@ -66,8 +66,6 @@ func (s *Timer) play() {
 }
 
 var timeStyle = lipgloss.NewStyle().
-	// BorderStyle(lipgloss.NormalBorder()).
-	// BorderForeground(lipgloss.Color("#FFFFFF")).
 	Align(lipgloss.Center).
 	Height(2).
 	Bold(true).

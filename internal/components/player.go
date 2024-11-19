@@ -14,30 +14,25 @@ import (
 
 	"github.com/dhowden/tag"
 
-	// Check this tutorial for introduction
-	// https://reintech.io/blog/writing-a-go-based-music-player
 	"github.com/gopxl/beep/v2"
 	"github.com/gopxl/beep/v2/mp3"
 	"github.com/gopxl/beep/v2/speaker"
 )
 
-// check here for a better implementation
-// https://github.com/Malwarize/retro/blob/dd50e3722eef83406d1322031a4ca9f3d8707410/server/player/musics.go#L13
 type Song struct {
 	filename string
 	artist   string
 	title    string
 }
 
-// To know how to handle pauses and resumes check here
-// https://github.com/Malwarize/retro/blob/dd50e3722eef83406d1322031a4ca9f3d8707410/server/player/player.go#L275
 type Player struct {
 	icon           string
 	songs          []Song
 	cursor         int
 	isRunning      bool
-	trackIsPlaying bool
+	isTrackPlaying bool
 	isInitialized  bool
+	stopFunc       context.CancelFunc
 }
 
 func (p *Player) Init() tea.Cmd {
@@ -48,12 +43,7 @@ func (p *Player) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return p, nil
 }
 
-var playerStyle = lipgloss.NewStyle().
-	// BorderStyle(lipgloss.NormalBorder()).
-	// BorderForeground(lipgloss.Color("#0000FF")).
-	Align(lipgloss.Center)
-	// Height(2).
-	// Padding(0, 4)
+var playerStyle = lipgloss.NewStyle().Align(lipgloss.Center)
 
 func (p *Player) View() string {
 	if len(p.songs) <= 0 {
@@ -64,10 +54,18 @@ func (p *Player) View() string {
 
 func (p *Player) play() {
 	p.isRunning = !p.isRunning
-	if p.isRunning && !p.trackIsPlaying && p.cursor < len(p.songs) {
+	if p.isRunning && !p.isTrackPlaying && p.cursor < len(p.songs) {
+		p.isTrackPlaying = true
 		ctx := context.Background()
-		ctx, _ = context.WithCancel(ctx)
+		ctx, cancel := context.WithCancel(ctx)
+		p.stopFunc = cancel
 		go p.playTrack(ctx)
+	}
+}
+
+func (p *Player) stop() {
+	if p.stopFunc != nil {
+		p.stopFunc()
 	}
 }
 
@@ -169,11 +167,20 @@ func (p *Player) playTrack(ctx context.Context) error {
 			done <- true
 		})))
 
-		<-done
-
-		p.next()
-
-		streamer.Close()
-		f.Close()
+		select {
+		case <-ctx.Done():
+			// clean resources when the context is done
+			p.isRunning = false
+			p.isTrackPlaying = false
+			p.isInitialized = false
+			speaker.Clear()
+			f.Close()
+			streamer.Close()
+			return nil
+		case <-done:
+			p.next()
+			streamer.Close()
+			f.Close()
+		}
 	}
 }

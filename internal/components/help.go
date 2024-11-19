@@ -1,9 +1,6 @@
 package components
 
 import (
-	// "fmt"
-	//    "slices"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
@@ -28,16 +25,11 @@ func (h *Help) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 var leftBlockStyle = lipgloss.NewStyle().
-	// BorderStyle(lipgloss.NormalBorder()).
 	Bold(true).
-	// BorderForeground(lipgloss.Color("#FF0000")).
-	// Height(10).
 	Align(lipgloss.Center)
 
 var rightBlockStyle = lipgloss.NewStyle().
-	// BorderStyle(lipgloss.NormalBorder()).
 	Bold(true).
-	// BorderForeground(lipgloss.Color("#00FF00")).
 	MarginLeft(2).
 	Align(lipgloss.Center)
 
@@ -68,10 +60,6 @@ func (h *Help) View() string {
 
 	return lipgloss.JoinVertical(lipgloss.Center, title, body)
 }
-
-// func (h *Help) format(e HelpEntry) string {
-// 	return helpStyle.Render(fmt.Sprintf("%s \t\t %s", e.cmd, e.msg))
-// }
 
 func NewHelp() *Help {
 	return &Help{

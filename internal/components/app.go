@@ -69,8 +69,6 @@ func (s *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 var appStyle = lipgloss.NewStyle().
-	// BorderStyle(lipgloss.NormalBorder()).
-	// BorderForeground(lipgloss.Color("#FF0000")).
 	Width(100).
 	Height(10).
 	Padding(2, 4).
@@ -107,6 +105,11 @@ func (s *App) play() {
 	s.isRunning = !s.isRunning
 	s.timer.play()
 	s.player.play()
+}
+
+func (s *App) stop() {
+	s.isRunning = false
+	s.player.stop()
 }
 
 type option struct {
