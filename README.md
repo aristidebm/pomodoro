@@ -2,7 +2,7 @@
 
 Just another pomodoro timer with music playing support
 
-![demo](demo.mp4)
+https://github.com/user-attachments/assets/35afd251-d41e-4e2c-a43a-d8d6190ad850
 
 ## Installation
 
