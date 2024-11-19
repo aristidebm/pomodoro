@@ -49,6 +49,10 @@ Need to know available CLI options ?
 $)> pomodoro --help
 ```
 
+## Thanks
+
+Thanks to [ashtron](https://github.com/ashtron/tomatillo) for bringing the idea of pairing a pomodoro timer with a music player
+
 ## TODO
 
 - [ ] Add support for timer `reset` feature.
