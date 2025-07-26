@@ -64,7 +64,7 @@ func (h *Help) View() string {
 func NewHelp() *Help {
 	return &Help{
 		entries: []HelpEntry{
-			{cmd: "h", msg: "show or hide this help page"},
+			{cmd: "h", msg: "toggle this help page"},
 			{cmd: "p", msg: "toggle play and pause"},
 			{cmd: "r", msg: "reset the timer"},
 		},

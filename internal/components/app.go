@@ -103,7 +103,7 @@ func (s *App) View() string {
 
 func (s *App) play() {
 	s.isRunning = !s.isRunning
-	s.timer.play()
+	s.timer.togglPlay()
 	s.player.play()
 }
 

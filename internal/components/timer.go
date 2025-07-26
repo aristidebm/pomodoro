@@ -60,7 +60,7 @@ func (s *Timer) update(_ time.Time) {
 	}
 }
 
-func (s *Timer) play() {
+func (s *Timer) togglPlay() {
 	// toggle the running state
 	s.isRunning = !s.isRunning
 }
