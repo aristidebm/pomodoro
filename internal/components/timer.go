@@ -33,7 +33,6 @@ func (s *Timer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if s.isZero() {
 			s.reset()
 		}
-
 		if s.isRunning {
 			s.update(time.Time(msg))
 		}

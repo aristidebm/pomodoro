@@ -59,3 +59,4 @@ Thanks to [ashtron](https://github.com/ashtron/tomatillo) for bringing the idea 
 - [ ] Add support for more player features (pause/resume track, next/prev track).
 - [ ] Add support for breaks management (long breaks, short breaks, ...).
 - [ ] Add support for playing *.mp4, *.webm files.
+- [ ] I like the ideas of presets introduced in this pomodoro app git@github.com:helioLJ/pomotui.git
